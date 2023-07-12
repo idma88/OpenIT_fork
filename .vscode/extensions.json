@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "cheshirekow.cmake-format",
+    "cschlosser.doxdocgen",
+    "idma88.c-cpp--snippets",
+    "ms-vscode.cmake-tools",
+    "ms-vscode.cpptools",
+    "twxs.cmake",
+    "xaver.clang-format"
+  ],
+  "unwantedRecommendations": []
+}

@@ -1,0 +1,39 @@
+name: "🌐 Проблемы с локализацией/переводом"
+description: Сообщить о неправильных переводах.
+labels:
+- Bug
+- Translation
+body:
+- type: markdown
+  attributes:
+    value: Пожалуйста, не забудьте выполнить [поиск существующих проблем](https://github.com/Dev-DAA/OpenIT/issues), прежде чем подавать новую!
+- type: input
+  attributes:
+    label: Версия игры
+    placeholder: 0.1.0
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: 🌐 Затрагиваемый язык
+    placeholder: "German"
+  validations:
+    required: true
+- type: textarea
+  attributes: 
+    label: ❌ Актуальная фраза (ы)
+    placeholder: Что там? Пожалуйста, включите скриншот, так как это очень полезно.
+  validations:
+    required: true
+- type: textarea
+  attributes: 
+    label: ✔️ Ожидаемая фраза (ы)
+    placeholder: Что ожидалось?
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: ℹ Почему текущий перевод неверен
+    placeholder: Почему вы считаете, что это неправильно?
+  validations:
+    required: true

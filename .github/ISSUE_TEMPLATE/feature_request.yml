@@ -1,0 +1,26 @@
+name: "⭐ Запрос функции или улучшения"
+description: Предложите что-то новое
+labels:
+- New-feature
+body:
+- type: textarea
+  attributes: 
+    label: Описание новой функции/улучшения
+    placeholder: Каково ожидаемое поведение предлагаемой функции?
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Сценарий, когда это будет использоваться?
+    placeholder: По какому сценарию это будет использоваться?
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Вспомогательная информация
+    placeholder: "Эта информация обеспечивает контекст для сценария, который в противном случае может быть потерян."
+  validations:
+    required: false
+- type: markdown
+  attributes:
+    value: Пожалуйста, ограничьтесь одним запросом на проблему.
