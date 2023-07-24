@@ -16,8 +16,11 @@ Player::GetNickname() const
 bool
 Player::SetNickname(std::string_view nickname)
 {
-  m_nickname = nickname;
-  return !m_nickname.empty();
+  if (!nickname.empty()) {
+    m_nickname = nickname;
+    return true;
+  }
+  return false;
 }
 
 } // namespace OpenIT
