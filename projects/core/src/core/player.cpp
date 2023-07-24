@@ -17,7 +17,7 @@ bool
 Player::SetNickname(std::string_view nickname)
 {
   m_nickname = nickname;
-  return nickname == m_nickname;
+  return !m_nickname.empty();
 }
 
 } // namespace OpenIT
