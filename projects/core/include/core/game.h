@@ -157,10 +157,10 @@ private:
   /// Список игроков
   Players m_players;
   /// Номер активного игрока
-  uint8_t m_activePlayer;
+  uint8_t m_activePlayer = 0;
   /// Игровое поле
   Field m_field;
   /// Координаты каретки
-  Position m_carriage;
+  Position m_carriage = { 4, 4 };
 };
 } // namespace OpenIT

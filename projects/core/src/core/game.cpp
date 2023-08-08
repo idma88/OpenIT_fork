@@ -1,82 +1,51 @@
-#include <ctime> // rand()
+#include <random> // std::uniform_int_distribution
 
 #include <game.h>
 
 namespace OpenIT {
 
-CellValue
-Game::GenerateCellValue()
-{
-  /// random_number = firs_value + rand() % last_value;
-  CellValue value;
-  do {
-    value      = ABS_MIN_VALUE + rand() % ABS_MAX_VALUE;
-    bool sight = rand() % 1;
-    value      = sight ? value : value * -1;
-  } while (CheckRepeatValue(value));
-  return value;
-}
-
-bool
-Game::CheckRepeatValue(CellValue value)
-{
-  size_t count = 0;
-  for (size_t i = 0; i < FIELD_SIZE * FIELD_SIZE; ++i) {
-    if (value == m_field[i]) ++count;
-    if (count >= MAX_REPEAT_VALUE) return true;
-  }
-  return false;
-}
-
-Game::Game()
-{
-  std::srand(std::time(nullptr));
-  // Start(); //?
-  // TODO Game::Game()
-}
+Game::Game() {}
 
 void
 Game::Start()
 {
-  // TODO void Game::Start()
+  auto rnd = []() {
+    std::random_device              rd;
+    std::mt19937                    gen(rd());
+    std::uniform_int_distribution<> distrib(-ABS_MAX_VALUE, ABS_MAX_VALUE);
 
-  m_field.fill(0);
+    int8_t value = distrib(gen);
+
+    while (std::abs(value) < ABS_MIN_VALUE)
+      value = distrib(gen);
+
+    return value;
+  };
 
   for (size_t i = 0; i < FIELD_SIZE * FIELD_SIZE; ++i)
-    m_field[i] = GenerateCellValue();
+    m_field[i] = rnd();
 
   if (!m_players.empty()) {
     for (auto it = m_players.begin(); it != m_players.end(); ++it) {
       it->m_score = 0;
     }
   }
-
-  // Стартовая позиция каретки
-  // TODO Уточнить стартовую поз
-  m_carriage.x = rand() % FIELD_SIZE;
-  m_carriage.y = rand() % FIELD_SIZE;
-
-  // Стартовый выбор активного игрока
-  // TODO Уточнить принцип выбора активного игрока
-  m_activePlayer = rand() % 2;
 }
 
 bool
 Game::IsGameOver() const
 {
-  // TODO bool Game::IsGameOver() const
-  int summCell = 0;
-  // Вертикальное перемещение каретки для игрока №1
-  if (m_activePlayer == 0)
-    for (int y = 0; y < FIELD_SIZE; ++y)
-      summCell += m_field[m_carriage.x + y * FIELD_SIZE];
-
-  //Горизонтальное перемещение каретки для игрока №2
-  else
+  // Горизонтальное перемещение каретки для игрока №1
+  if (m_activePlayer == 0) {
     for (int x = 0; x < FIELD_SIZE; ++x)
-      summCell += m_field[x + m_carriage.y * FIELD_SIZE];
+      if (m_field[x + m_carriage.y * FIELD_SIZE] != 0) return false;
+  }
+  // Вертикальное перемещение каретки для игрока №2
+  else
+    for (int y = 0; y < FIELD_SIZE; ++y)
+      if (m_field[m_carriage.x + y * FIELD_SIZE] != 0) return false;
 
-  return !summCell;
+  return true;
 }
 
 IdValue
@@ -100,11 +69,12 @@ Game::GetActivePlayer() const
 Scores
 Game::GetScores() const
 {
-  // TODO Scores Game::GetScores() const
   Scores scores;
-  for (auto it = m_players.begin(); it != m_players.end(); ++it) {
-    scores.push_back(*it.m_score);
-  }
+
+  for (auto&& item : m_players)
+    scores.push_back(item.m_score);
+
+  return scores;
 }
 
 Field
@@ -132,9 +102,7 @@ Game::AddPlayer(const Player& player)
 bool
 Game::RemovePlayer(uint8_t index)
 {
-  if (m_players.empty()) return false;
-
-  if (m_players.size() - 1 < index) return false;
+  if (index >= 0) return false;
 
   m_players.erase(index);
 
@@ -144,14 +112,13 @@ Game::RemovePlayer(uint8_t index)
 Position
 Game::MoveCarriage(Position pos)
 {
-  // TODO Position Game::MoveCarriage(Position pos)
-  // Вертикальное перемещение каретки для игрока №1
+  // Горизонтальное перемещение каретки для игрока №1
   if (m_activePlayer == 0) {
-    if (pos.x == m_carriage.x && pos.y >= 0 && pos.y < FIELD_SIZE) m_carriage = pos;
-  }
-  //Горизонтальное перемещение каретки для игрока №2
-  else {
     if (pos.y == m_carriage.y && pos.x >= 0 && pos.x < FIELD_SIZE) m_carriage = pos;
+  }
+  // Вертикальное перемещение каретки для игрока №2
+  else {
+    if (pos.x == m_carriage.x && pos.y >= 0 && pos.y < FIELD_SIZE) m_carriage = pos;
   }
   return m_carriage;
 }
@@ -159,22 +126,20 @@ Game::MoveCarriage(Position pos)
 bool
 Game::OpenCell()
 {
-  // TODO bool Game::OpenCell()
-
   int cellPos = m_carriage.x + m_carriage.y * FIELD_SIZE;
-  if (m_field[cellPos] != 0) {
-    if (m_activePlayer == 0)
-      m_players.front().m_score += m_field[cellPos];
-    else
-      m_players.back().m_score += m_field[cellPos];
 
-    m_field[cellPos] = 0;
+  if (m_field[cellPos] == 0) return false;
 
-    m_activePlayer = (m_activePlayer ? 0 : 1);
+  if (m_activePlayer == 0)
+    m_players.front().m_score += m_field[cellPos];
+  else
+    m_players.back().m_score += m_field[cellPos];
 
-    return true;
-  }
-  return false;
+  m_field[cellPos] = 0;
+
+  m_activePlayer = (m_activePlayer ? 0 : 1);
+
+  return true;
 }
 
 } // namespace OpenIT
