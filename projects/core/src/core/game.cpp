@@ -22,28 +22,30 @@ Game::Start()
     return value;
   };
 
-  for (size_t i = 0; i < FIELD_SIZE * FIELD_SIZE; ++i)
-    m_field[i] = rnd();
+  m_carriage = { FIELD_SIZE / 2, FIELD_SIZE / 2 };
 
-  if (!m_players.empty()) {
-    for (auto it = m_players.begin(); it != m_players.end(); ++it) {
-      it->m_score = 0;
-    }
-  }
+  m_activePlayer = uint8_t(ActivePlayer::FIRST);
+
+  for (auto&& item : m_field)
+    item = rnd();
+
+  if (!m_players.empty())
+    for (auto&& player : m_players)
+      player.m_score = 0;
 }
 
 bool
 Game::IsGameOver() const
 {
   // Горизонтальное перемещение каретки для игрока №1
-  if (m_activePlayer == 0) {
+  if (m_activePlayer == uint8_t(ActivePlayer::FIRST)) {
     for (int x = 0; x < FIELD_SIZE; ++x)
-      if (m_field[x + m_carriage.y * FIELD_SIZE] != 0) return false;
+      if (m_field[x + m_carriage.y * FIELD_SIZE] != EMPTY_CELL) return false;
   }
   // Вертикальное перемещение каретки для игрока №2
   else
     for (int y = 0; y < FIELD_SIZE; ++y)
-      if (m_field[m_carriage.x + y * FIELD_SIZE] != 0) return false;
+      if (m_field[m_carriage.x + y * FIELD_SIZE] != EMPTY_CELL) return false;
 
   return true;
 }
@@ -92,7 +94,7 @@ Game::GetCarriage() const
 bool
 Game::AddPlayer(const Player& player)
 {
-  if (m_players.size() == 2) return false;
+  if (m_players.size() == PLAYER_COUNT) return false;
 
   m_players.push_back(player);
 
@@ -102,9 +104,18 @@ Game::AddPlayer(const Player& player)
 bool
 Game::RemovePlayer(uint8_t index)
 {
-  if (index >= 0) return false;
+  if (index >= m_players.size()) return false;
 
-  m_players.erase(index);
+  switch (index) {
+    case uint8_t(ActivePlayer::FIRST):
+      m_players.erase(m_players.begin());
+      break;
+    case uint8_t(ActivePlayer::SECOND):
+      m_players.erase(m_players.end());
+      break;
+    default:
+      break;
+  }
 
   return true;
 }
@@ -113,7 +124,7 @@ Position
 Game::MoveCarriage(Position pos)
 {
   // Горизонтальное перемещение каретки для игрока №1
-  if (m_activePlayer == 0) {
+  if (m_activePlayer == uint8_t(ActivePlayer::FIRST)) {
     if (pos.y == m_carriage.y && pos.x >= 0 && pos.x < FIELD_SIZE) m_carriage = pos;
   }
   // Вертикальное перемещение каретки для игрока №2
@@ -128,16 +139,16 @@ Game::OpenCell()
 {
   int cellPos = m_carriage.x + m_carriage.y * FIELD_SIZE;
 
-  if (m_field[cellPos] == 0) return false;
+  if (m_field[cellPos] == EMPTY_CELL) return false;
 
-  if (m_activePlayer == 0)
+  if (m_activePlayer == uint8_t(ActivePlayer::FIRST))
     m_players.front().m_score += m_field[cellPos];
   else
     m_players.back().m_score += m_field[cellPos];
 
-  m_field[cellPos] = 0;
+  m_field[cellPos] = EMPTY_CELL;
 
-  m_activePlayer = (m_activePlayer ? 0 : 1);
+  m_activePlayer = (m_activePlayer ? uint8_t(ActivePlayer::FIRST) : uint8_t(ActivePlayer::SECOND));
 
   return true;
 }

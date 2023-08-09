@@ -25,7 +25,7 @@ public:
   using Field = std::array<CellValue, FIELD_SIZE * FIELD_SIZE>;
   /// Псевдоним счётов игроков
   using Scores = std::list<ScoreValue>;
-
+  
 public:
   /**
    * @brief Конструктор
@@ -157,10 +157,10 @@ private:
   /// Список игроков
   Players m_players;
   /// Номер активного игрока
-  uint8_t m_activePlayer = 0;
+  uint8_t m_activePlayer;
   /// Игровое поле
   Field m_field;
   /// Координаты каретки
-  Position m_carriage = { 4, 4 };
+  Position m_carriage;
 };
 } // namespace OpenIT
