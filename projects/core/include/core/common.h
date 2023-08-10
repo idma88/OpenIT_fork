@@ -34,5 +34,7 @@ static const uint8_t FIELD_SIZE = 8;
 static const CellValue ABS_MIN_VALUE = 1;
 /// Максимальное значение в ячейке
 static const CellValue ABS_MAX_VALUE = 11;
+/// Значение пустой ячейки
+static const CellValue EMPTY_CELL = 0;
 
 } // namespace OpenIT
