@@ -19,16 +19,6 @@ struct Position
   int8_t y;
 };
 
-/**
- * @brief Активный игрок
- * 
- */
-enum class ActivePlayer : uint8_t
-{
-  FIRST  = 0,
-  SECOND = 1
-};
-
 /// Псевдоним типа для уникальных идентификаторов
 using IdValue = uint64_t;
 /// Псевдоним типа для значений ячеек
@@ -45,6 +35,6 @@ static const CellValue ABS_MIN_VALUE = 1;
 /// Максимальное значение в ячейке
 static const CellValue ABS_MAX_VALUE = 11;
 /// Значение пустой ячейки
-static const uint8_t EMPTY_CELL = 0;
+static const CellValue EMPTY_CELL = 0;
 
 } // namespace OpenIT
