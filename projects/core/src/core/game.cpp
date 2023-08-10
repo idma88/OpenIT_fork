@@ -1,6 +1,14 @@
-#include <random> // std::uniform_int_distribution
+/**
+ * @file Game.cpp
+ * @author Dmitrii Ivanov (idma88@yandex.ru)
+ * @author Denis Koinash (den.koinash@gmail.com)
+ * @brief Определение класса Игра
+ */
 
-#include <game.h>
+#include <iterator> // std::next
+#include <random>   // std::uniform_int_distribution
+
+#include <core/game.h>
 
 namespace OpenIT {
 
@@ -14,10 +22,10 @@ Game::Start()
     std::mt19937                    gen(rd());
     std::uniform_int_distribution<> distrib(-ABS_MAX_VALUE, ABS_MAX_VALUE);
 
-    int8_t value = distrib(gen);
-
-    while (std::abs(value) < ABS_MIN_VALUE)
+    int8_t value;
+    do
       value = distrib(gen);
+    while (value == EMPTY_CELL);
 
     return value;
   };
@@ -105,16 +113,7 @@ Game::RemovePlayer(uint8_t index)
 {
   if (index >= m_players.size()) return false;
 
-  switch (index) {
-    case 0:
-      m_players.erase(m_players.begin());
-      break;
-    case 1:
-      m_players.erase(m_players.end());
-      break;
-    default:
-      break;
-  }
+  m_players.erase(std::next(m_players.begin(), index));
 
   return true;
 }
@@ -140,10 +139,7 @@ Game::OpenCell()
 
   if (m_field[cellPos] == EMPTY_CELL) return false;
 
-  if (m_activePlayer == 0)
-    m_players.front().m_score += m_field[cellPos];
-  else
-    m_players.back().m_score += m_field[cellPos];
+  std::next(m_players.begin(), m_activePlayer)->m_score += m_field[cellPos];
 
   m_field[cellPos] = EMPTY_CELL;
 

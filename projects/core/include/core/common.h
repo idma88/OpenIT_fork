@@ -1,6 +1,7 @@
 /**
  * @file Common.h
  * @author Dmitrii Ivanov (idma88@yandex.ru)
+ * @author Denis Koinash (den.koinash@gmail.com)
  * @brief Определение общих перечислений, псевдонимов и констант
  */
 #pragma once
