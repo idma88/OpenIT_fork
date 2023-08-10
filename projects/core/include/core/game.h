@@ -25,7 +25,7 @@ public:
   using Field = std::array<CellValue, FIELD_SIZE * FIELD_SIZE>;
   /// Псевдоним счётов игроков
   using Scores = std::list<ScoreValue>;
-  
+
 public:
   /**
    * @brief Конструктор
