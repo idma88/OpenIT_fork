@@ -19,6 +19,19 @@ struct Position
   int8_t y;
 };
 
+enum class LEVEL
+{
+  EASY   = 1,
+  MEDIUM = 2,
+  HARD   = 3,
+};
+
+enum class AXIS
+{
+  X = 0,
+  Y = 1,
+};
+
 /// Псевдоним типа для уникальных идентификаторов
 using IdValue = uint64_t;
 /// Псевдоним типа для значений ячеек
