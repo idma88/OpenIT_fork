@@ -1,14 +1,14 @@
 /**
- * @file aialgorithm.h
- * @author Dmitrii Ivanov (idma88@yandex.ru)
- * @brief Определение класса Игрок
+ * @file ai.h
+ * @author Aleksandr Kohanyuk (shurik_k73@mail.ru)
+ * @brief Определение класса ИИ
  */
 #pragma once
 
 #include <cstdint>
-#include <vector>
 
 #include <core/common.h>
+#include <core/game.h>
 
 namespace OpenIT {
 /**
@@ -20,8 +20,10 @@ public:
   /**
    * @brief Конструктор
    *
+   * @param[in] difficulty Уровень сложности
+   * @param[in] axis       Ось, вдоль которой ИИ может передвигать каретку
    */
-  AI(const LEVEL& level = LEVEL::EASY, const AXIS& axis = AXIS::X);
+  AI(const Difficulty& difficulty = Difficulty::EASY, const Axis& axis = Axis::Y);
 
   /**
    * @brief Деструктор
@@ -31,16 +33,25 @@ public:
   /**
    * @brief Устанавливает уровень сложности
    *
-   * @param[in] level уровень сложности
+   * @param[in] difficulty Уровень сложности
    */
-  void SetDifficultyLevel(const LEVEL& level);
+  void SetDifficulty(const Difficulty& difficulty);
 
   /**
-   * @brief Устанавливает по какой оси будет двигаться каретка
+   * @brief Устанавливает ось, вдоль которой ИИ может передвигать каретку
    *
-   * * @param[in] axis ось по которой передвигается каретка AI
+   * @param[in] axis Ось, вдоль которой ИИ может передвигать каретку
    */
-  void SetAXIS(const AXIS& axis);
+  void SetAxis(const Axis& axis);
+
+  /**
+   * @brief Рассчитывает ход
+   *
+   * @param[in] field   Игровое поле
+   * @param[in] carrige Положение каретки
+   * @return Возвращает Новое положение каретки, соотвтетвующее выбранной ИИ ячейки
+   */
+  Position Calculate(const Game::Field& field, Position carrige);
 
 private:
   /**
@@ -49,33 +60,21 @@ private:
    * * @param[in]
    */
   int8_t CheckValue(Position carrige, int8_t countItteration, int8_t sum, int8_t bestSum);
-  /**
-   * @brief Рассчитывает ход
-   *
-   *  @param[in] field уровень сложности
-   *
-   * @return Возвращает true в случае успеха или false в противном случае
-   */
-  Position Calculate(const std::vector<int>& field, Position posPlayer);
 
 private:
-  /// Уровень сложности бота
-  LEVEL m_level = LEVEL::EASY;
-  /// Ось по которой двигается каретка
-  AXIS m_axis = AXIS::X;
+  /// Уровень сложности
+  Difficulty m_difficulty;
+  /// Ось, вдоль которой ИИ может передвигать каретку
+  Axis m_axis;
   /// Лучшая сумма за все ходы
   int8_t m_sum;
   /// Текущая позиция игрока
   Position m_current_carrige_pos;
   /// Лучший следующий ход
   Position m_next_the_best_pos;
-  /// Размер поля в ширину
-  const int8_t WIDTH = 8;
-  /// Размер поля в высоту
-  const int8_t HEIGHT = 8;
   /// Кол-во просмотренных ходов ИИ
-  int8_t m_countItterationLevel = 0;
+  int8_t m_countItterationdifficulty = 0;
   /// Копия поля
-  std::vector<int> m_copy_field;
+  Game::Field m_copy_field;
 };
 } // namespace OpenIT
