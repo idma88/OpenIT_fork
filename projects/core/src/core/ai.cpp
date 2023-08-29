@@ -1,8 +1,11 @@
 /**
  * @file ai.cpp
  * @author Aleksandr Kohanyuk (shurik_k73@mail.ru)
+ * @author Dmitrii Ivanov (idma88@yandex.ru)
  * @brief Определение класса ИИ
  */
+#include <optional>
+
 #include <core/ai.h>
 
 namespace OpenIT {
@@ -28,102 +31,51 @@ AI::SetAxis(const Axis& axis)
 Position
 AI::Calculate(const Game::Field& field, Position carriage)
 {
-  /// Скопируем поле
-  m_copy_field = field;
-  /// Обновляем текущую позицию игрока
-  m_current_carrige_pos = carriage;
-  /// Сбрасываем лучшую сумму в 0
-  /// Устанавливаем кол-во просчёта хода
-  m_countItterationdifficulty = static_cast<int8_t>(m_difficulty);
-  m_sum                       = 0;
-  /// Устанавливаем позициию ИИ
-  Position pos_carrige_now = { 0, 0 };
-  if (m_axis == Axis::X) {
-    pos_carrige_now.x = carriage.x;
-  } else {
-    pos_carrige_now.y = carriage.y;
-  }
-  /// Переменная для подсчёта и возврата значения
-  int8_t sum = 0;
-
-  for (int8_t i = 0; i < FIELD_SIZE; i++) {
-    if (m_axis == Axis::X) {
-      pos_carrige_now = { pos_carrige_now.x, i };
-    } else {
-      pos_carrige_now = { i, pos_carrige_now.y };
-    }
-
-    if (m_copy_field[pos_carrige_now.y * FIELD_SIZE + pos_carrige_now.x] != 0) {
-      /// Cчитаем значение выбранной ячейки
-      sum = 0;
-      sum = m_copy_field[pos_carrige_now.y * FIELD_SIZE + pos_carrige_now.x];
-      sum = CheckValue(pos_carrige_now, m_countItterationdifficulty, sum, 0);
-      /// Обновим лучшую сумму и лучший следующий ход
-      if (sum > m_sum) {
-        m_sum = sum;
-        if (m_axis == Axis::X) {
-          m_next_the_best_pos = { pos_carrige_now.x, i };
-        } else {
-          m_next_the_best_pos = { i, pos_carrige_now.y };
-        }
-      }
-      /// Скопируем поле снова
-      m_copy_field = field;
-    }
-  }
-  return m_next_the_best_pos;
+  return std::get<1>(MakeMove(field, carriage, m_axis, m_difficulty * 2));
 }
 
-int8_t
-AI::CheckValue(Position carrige, int8_t countItteration, int8_t sum, int8_t bestSum)
+std::tuple<int, Position>
+AI::MakeMove(Game::Field field, Position carrige, Axis axis, int steps)
 {
-  /// Ход игрока, перебираем все возможные варинты
-  for (int8_t pl = 0; pl < FIELD_SIZE; pl++) {
-    /// Выставляем позицию каретки для игрока
-    if (m_axis == Axis::X) {
-      carrige = { pl, carrige.y };
-    } else {
-      carrige = { carrige.x, pl };
-    }
+  if (steps == 0) return 0;
 
-    /// Если ячейка была не открыта
-    if (m_copy_field[carrige.y * FIELD_SIZE + carrige.x] != 0) {
-      /// Вычтем разницу между суммой АИ и игрока
-      sum = sum - m_copy_field[carrige.y * FIELD_SIZE + carrige.x];
-      /// Установим ячейку как открытую
-      m_copy_field[carrige.y * FIELD_SIZE + carrige.x] = 0;
-    }
+  auto swapAxis = [](Axis axis) {
+    if (axis == Axis::X) return Axis::Y else Axis::X;
+  };
 
-    /// Углубляемся
-    countItteration--;
+  std::optional<int> bestScore;
+  Position           bestPos;
 
-    /// Если достигли глубины, то возвращаем значение или больше нет возможности смотреть ходы
-    if ((countItteration == 0) || (pl == FIELD_SIZE - 1)) {
-      if (bestSum > sum) {
-        bestSum = sum;
-      }
-      return bestSum;
-    }
+  for (int8_t i = 0; i < FIELD_SIZE; ++i) {
+    Game::Field curField = field;
+    Position    curPos;
 
-    /// Рассчитываем следующий ход ИИ
-    for (int8_t ai = 0; ai < FIELD_SIZE; ai++) {
-      /// Выставляем позицию каретки для ИИ
-      if (m_axis == Axis::X) {
-        carrige = { carrige.x, ai };
-      } else {
-        carrige = { ai, carrige.y };
-      }
-      /// Если ячейка была не открыта
-      if (m_copy_field[carrige.y * FIELD_SIZE + carrige.x] != 0) {
-        /// Прибавим значение к сумме т.к ходит ИИ
-        sum = sum + m_copy_field[carrige.y * FIELD_SIZE + carrige.x];
-        /// Установим ячейку как открытую
-        m_copy_field[carrige.y * FIELD_SIZE + carrige.x] = 0;
-        /// Вызовем функцию проверки хода и перезапишем наилучшее значение, когда дойдём до глубины
-        bestSum = CheckValue(carrige, countItteration, sum, bestSum);
-      }
+    if (axis == Axis::X)
+      curPos = { i, carrige.y };
+    else
+      curPos = { carrige.x, i };
+
+    const int posIndex = curPos.x + curPos.y * FIELD_SIZE;
+    if (curField[posIndex] == 0) continue;
+
+    int cellValue      = curField[posIndex];
+    curField[posIndex] = 0;
+
+    std::tuple<int, Position> recursiveResult =
+      MakeMove(curField, curPos, swapAxis(axis), steps - 1);
+
+    int curScore = cellValue + (axis == m_axis ? -1 : 1) * get<0>(recursiveResult);
+
+    if (!bestScore) {
+      bestScore = curScore;
+      bestPos   = get<1>(recursiveResult);
+    } else if (curScore > bestScore) {
+      bestScore = curScore;
+      bestPos   = get<1>(recursiveResult);
     }
-  }
+  };
+
+  return std::make_tupe<int, Position>(bestScore, bestPos);
 }
 
 } // namespace OpenIT

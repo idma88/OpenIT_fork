@@ -1,11 +1,13 @@
 /**
  * @file ai.h
  * @author Aleksandr Kohanyuk (shurik_k73@mail.ru)
+ * @author Dmitrii Ivanov (idma88@yandex.ru)
  * @brief Определение класса ИИ
  */
 #pragma once
 
 #include <cstdint>
+#include <tuple>
 
 #include <core/common.h>
 #include <core/game.h>
@@ -55,26 +57,20 @@ public:
 
 private:
   /**
-   * @brief
+   * @brief Имитирует процесс совершения последовательности ходов с поиском лучшего хода
    *
-   * * @param[in]
+   * @param[in] field   Игровое поле
+   * @param[in] carrige Положение каретки
+   * @param[in] axis    Ось, вдоль которой можно передвигать каретку
+   * @param[in] steps   Количество рекурсивных шагов
+   * @return Возвращает кортеж из взвешенной суммы очков и лучшей позиции
    */
-  int8_t CheckValue(Position carrige, int8_t countItteration, int8_t sum, int8_t bestSum);
+  std::tuple<int, Position> MakeMove(Game::Field field, Position carrige, Axis axis, int steps);
 
 private:
   /// Уровень сложности
   Difficulty m_difficulty;
   /// Ось, вдоль которой ИИ может передвигать каретку
   Axis m_axis;
-  /// Лучшая сумма за все ходы
-  int8_t m_sum;
-  /// Текущая позиция игрока
-  Position m_current_carrige_pos;
-  /// Лучший следующий ход
-  Position m_next_the_best_pos;
-  /// Кол-во просмотренных ходов ИИ
-  int8_t m_countItterationdifficulty = 0;
-  /// Копия поля
-  Game::Field m_copy_field;
 };
 } // namespace OpenIT
