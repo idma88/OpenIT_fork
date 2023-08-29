@@ -32,7 +32,6 @@ public:
    */
   ~Player() = default;
 
-
   /**
    * @brief Получает никнейм игрока
    *

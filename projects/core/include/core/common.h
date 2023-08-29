@@ -1,6 +1,7 @@
 /**
  * @file Common.h
  * @author Dmitrii Ivanov (idma88@yandex.ru)
+ * @author Denis Koinash (den.koinash@gmail.com)
  * @author Aleksandr Kohanyuk (shurik_k73@mail.ru)
  * @brief Определение общих перечислений, псевдонимов и констант
  */
@@ -58,5 +59,7 @@ static const uint8_t FIELD_SIZE = 8;
 static const CellValue ABS_MIN_VALUE = 1;
 /// Максимальное значение в ячейке
 static const CellValue ABS_MAX_VALUE = 11;
+/// Значение пустой ячейки
+static const CellValue EMPTY_CELL = 0;
 
 } // namespace OpenIT
