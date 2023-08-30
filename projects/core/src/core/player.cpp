@@ -1,4 +1,11 @@
-#include <player.h>
+/**
+ * @file Player.cpp
+ * @author Dmitrii Ivanov (idma88@yandex.ru)
+ * @author Denis Koinash (den.koinash@gmail.com)
+ * @brief Реализация класса Игрок
+ */
+
+#include <core/player.h>
 
 namespace OpenIT {
 

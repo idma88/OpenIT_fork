@@ -63,7 +63,7 @@ Game::GetId() const
   return m_id;
 }
 
-Players
+Game::Players
 Game::GetPlayers() const
 {
   return m_players;
@@ -75,7 +75,7 @@ Game::GetActivePlayer() const
   return m_activePlayer;
 }
 
-Scores
+Game::Scores
 Game::GetScores() const
 {
   Scores scores;
@@ -86,7 +86,7 @@ Game::GetScores() const
   return scores;
 }
 
-Field
+Game::Field
 Game::GetField() const
 {
   return m_field;
