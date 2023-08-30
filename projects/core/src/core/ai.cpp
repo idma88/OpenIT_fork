@@ -10,7 +10,7 @@
 
 namespace OpenIT {
 
-AI::AI(const Difficulty& difficulty = Difficulty::MEDIUM, const Axis& axis = Axis::X)
+AI::AI(const Difficulty& difficulty, const Axis& axis)
   : m_difficulty(difficulty)
   , m_axis(axis)
 {
@@ -29,53 +29,48 @@ AI::SetAxis(const Axis& axis)
 }
 
 Position
-AI::Calculate(const Game::Field& field, Position carriage)
+AI::Calculate(const Game::Field& field, Position carriage) const
 {
-  return std::get<1>(MakeMove(field, carriage, m_axis, m_difficulty * 2));
+  return std::get<1>(MakeMove(field, carriage, m_axis, (uint8_t)m_difficulty * 2));
 }
 
-std::tuple<int, Position>
-AI::MakeMove(Game::Field field, Position carrige, Axis axis, int steps)
+std::tuple<ScoreValue, Position>
+AI::MakeMove(Game::Field field, Position carrige, Axis axis, uint8_t steps) const
 {
-  if (steps == 0) return 0;
+  if (steps == 0) return { 0, carrige };
 
-  auto swapAxis = [](Axis axis) {
-    if (axis == Axis::X) return Axis::Y else Axis::X;
-  };
+  std::optional<ScoreValue> bestScore;
+  Position                  bestPos;
 
-  std::optional<int> bestScore;
-  Position           bestPos;
-
+  Position curPos;
   for (int8_t i = 0; i < FIELD_SIZE; ++i) {
-    Game::Field curField = field;
-    Position    curPos;
-
     if (axis == Axis::X)
       curPos = { i, carrige.y };
     else
       curPos = { carrige.x, i };
 
-    const int posIndex = curPos.x + curPos.y * FIELD_SIZE;
-    if (curField[posIndex] == 0) continue;
+    int index = curPos.x + curPos.y * FIELD_SIZE;
+    if (field[index] == 0) continue;
 
-    int cellValue      = curField[posIndex];
-    curField[posIndex] = 0;
+    Game::Field curField  = field;
+    CellValue   cellValue = curField[index];
+    curField[index]       = 0;
 
-    std::tuple<int, Position> recursiveResult =
-      MakeMove(curField, curPos, swapAxis(axis), steps - 1);
+    std::tuple<ScoreValue, Position> result =
+      MakeMove(curField, curPos, (axis == Axis::X ? Axis::Y : Axis::X), steps - 1);
 
-    int curScore = cellValue + (axis == m_axis ? -1 : 1) * get<0>(recursiveResult);
+    ScoreValue curScore = cellValue + (axis == m_axis ? -1 : 1) * std::get<0>(result);
 
     if (!bestScore) {
       bestScore = curScore;
-      bestPos   = get<1>(recursiveResult);
-    } else if (curScore > bestScore) {
+      bestPos   = std::get<1>(result);
+    } else if (curScore > bestScore.value()) {
       bestScore = curScore;
-      bestPos   = get<1>(recursiveResult);
+      bestPos   = std::get<1>(result);
     }
   };
 
-  return std::make_tupe<int, Position>(bestScore, bestPos);
+  return { bestScore.value(), bestPos };
 }
 
 } // namespace OpenIT

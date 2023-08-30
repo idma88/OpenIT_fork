@@ -53,7 +53,7 @@ public:
    * @param[in] carrige Положение каретки
    * @return Возвращает Новое положение каретки, соотвтетвующее выбранной ИИ ячейки
    */
-  Position Calculate(const Game::Field& field, Position carrige);
+  Position Calculate(const Game::Field& field, Position carrige) const;
 
 private:
   /**
@@ -65,7 +65,10 @@ private:
    * @param[in] steps   Количество рекурсивных шагов
    * @return Возвращает кортеж из взвешенной суммы очков и лучшей позиции
    */
-  std::tuple<int, Position> MakeMove(Game::Field field, Position carrige, Axis axis, int steps);
+  std::tuple<ScoreValue, Position> MakeMove(Game::Field field,
+                                            Position    carrige,
+                                            Axis        axis,
+                                            uint8_t     steps) const;
 
 private:
   /// Уровень сложности
