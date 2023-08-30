@@ -1,4 +1,4 @@
-#include <entrypoint.h>
+#include <Entrypoint.h>
 
 ENTRYPOINT_MAIN
 {

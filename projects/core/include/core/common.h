@@ -2,6 +2,7 @@
  * @file Common.h
  * @author Dmitrii Ivanov (idma88@yandex.ru)
  * @author Denis Koinash (den.koinash@gmail.com)
+ * @author Aleksandr Kohanyuk (shurik_k73@mail.ru)
  * @brief Определение общих перечислений, псевдонимов и констант
  */
 #pragma once
@@ -18,6 +19,29 @@ struct Position
   int8_t x;
   /// Вертикальная координата
   int8_t y;
+};
+
+/**
+ * @brief Уровни сложности
+ *
+ * Значение уровня соответствует глубине поиска
+ *
+ * @note Не проводите оптимизации с целью замены значений на 0-based
+ */
+enum class Difficulty
+{
+  EASY   = 1, ///< Легкий уровень сложности
+  MEDIUM = 2, ///< Средний уровень сложности
+  HARD   = 3, ///< Высокий уровень сложности
+};
+
+/**
+ * @brief Оси, вдоль которых можно передвигать каретку
+ */
+enum class Axis
+{
+  X, ///< Горизонтальная ось
+  Y, ///< Вертикальная ось
 };
 
 /// Псевдоним типа для уникальных идентификаторов
