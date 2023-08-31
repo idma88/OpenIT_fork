@@ -3,17 +3,20 @@
 
 using namespace OpenIT;
 
-TEST(TestPlayer, Constructor_Check)
+TEST(TestPlayer, ConstructorWithoutParameter_Check)
 {
-  Player* player = new Player();
+  Player player;
 
-  ASSERT_EQ(player->GetNickname(), "");
+  ASSERT_EQ(player.GetNickname(), "");
 
-  delete player;
+}
+
+TEST(TestPlayer, ConstructorWithParameter_Check)
+{
 
   const std::string name = "SomeName";
 
-  player = new Player(name);
+  Player* player = new Player(name);
 
   ASSERT_EQ(player->GetNickname(), name);
 
