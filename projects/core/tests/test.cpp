@@ -1,24 +1,35 @@
 #include <core/player.h>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 using namespace OpenIT;
 
-class TestPlayer : public ::testing::Test
+TEST(TestPlayer, Constructor_Check)
 {
-protected:
-  void SetUp() override { m_player = new Player(); }
+  Player* player = new Player();
 
-  void TearDown() override { delete m_player; }
+  ASSERT_EQ(player->GetNickname(), "");
 
-  Player* m_player;
-};
+  delete player;
 
-TEST_F(TestPlayer, SetNickname_Check)
-{
   const std::string name = "SomeName";
 
-  m_player->SetNickname(name);
+  player = new Player(name);
 
-  ASSERT_EQ(m_player->GetNickname(), name);
+  ASSERT_EQ(player->GetNickname(), name);
+
+  delete player;
+}
+
+TEST(TestPlayer, SetNickname_Check)
+{
+  Player* player = new Player();
+
+  const std::string name = "SomeName";
+
+  player->SetNickname(name);
+
+  ASSERT_EQ(player->GetNickname(), name);
+
+  delete player;
 }
