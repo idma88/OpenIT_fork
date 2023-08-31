@@ -16,22 +16,20 @@ TEST(TestPlayer, ConstructorWithParameter_Check)
 
   const std::string name = "SomeName";
 
-  Player* player = new Player(name);
+  Player player(name);
 
-  ASSERT_EQ(player->GetNickname(), name);
+  ASSERT_EQ(player.GetNickname(), name);
 
-  delete player;
 }
 
 TEST(TestPlayer, SetNickname_Check)
 {
-  Player* player = new Player();
+  Player player;
 
   const std::string name = "SomeName";
 
-  player->SetNickname(name);
+  player.SetNickname(name);
 
-  ASSERT_EQ(player->GetNickname(), name);
+  ASSERT_EQ(player.GetNickname(), name);
 
-  delete player;
 }
