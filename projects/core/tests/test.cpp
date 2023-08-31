@@ -17,7 +17,6 @@ TEST(TestPlayer, ConstructorWithParameter_Check)
   Player player(name);
 
   ASSERT_EQ(player.GetNickname(), name);
-
 }
 
 TEST(TestPlayer, SetNickname_Check)
@@ -29,5 +28,4 @@ TEST(TestPlayer, SetNickname_Check)
   player.SetNickname(name);
 
   ASSERT_EQ(player.GetNickname(), name);
-
 }
