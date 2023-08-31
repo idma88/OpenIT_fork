@@ -1,5 +1,4 @@
 #include <core/player.h>
-
 #include <gtest/gtest.h>
 
 using namespace OpenIT;
