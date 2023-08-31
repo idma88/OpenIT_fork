@@ -8,12 +8,10 @@ TEST(TestPlayer, ConstructorWithoutParameter_Check)
   Player player;
 
   ASSERT_EQ(player.GetNickname(), "");
-
 }
 
 TEST(TestPlayer, ConstructorWithParameter_Check)
 {
-
   const std::string name = "SomeName";
 
   Player* player = new Player(name);
