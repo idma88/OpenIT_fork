@@ -1,0 +1,57 @@
+name: Linux
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        cxx: [g++-9, g++-10, clang++-10, clang++-11, clang++-12]
+        standard: [17, 20]
+        build_type: [Debug, Release]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restore cached vcpkg
+      id: cache-vcpkg-restore
+      uses: actions/cache/restore@v3
+      with:
+        path: ${{github.workspace}}/vcpkg_installed
+        key: ${{matrix.os}}-${{matrix.arch.vcpkg_triplet}}-${{hashFiles('**/vcpkg.json')}}
+
+    - name: Configure
+      env:
+        CXX: ${{matrix.cxx}}
+      run: |
+        cmake \
+          -S $GITHUB_WORKSPACE \
+          -B $GITHUB_WORKSPACE/build \
+          -DCMAKE_CXX_STANDARD=${{matrix.standard}} \
+          -DCMAKE_BUILD_TYPE=${{matrix.build_type}} \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=$GITHUB_WORKSPACE/vcpkg_installed
+
+    - name: Save cached vcpkg
+      id: cache-vcpkg-save
+      uses: actions/cache/save@v3
+      with:
+        path: ${{github.workspace}}/vcpkg_installed
+        key: ${{matrix.os}}-${{matrix.arch.vcpkg_triplet}}-${{hashFiles('**/vcpkg.json')}}
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      run: |
+        threads=`nproc`
+        cmake --build . --config ${{matrix.build_type}} --parallel $threads
+
+    - name: Run tests
+      working-directory: ${{github.workspace}}/build
+      run: |
+        threads=`nproc`
+        ctest --parallel $threads
