@@ -3,6 +3,8 @@
   "license": "GPL-3.0",
   "homepage": "https://github.com/Dev-DAA/OpenIT",
   "dependencies": [
-    "gtest"
+    "gtest",
+    "protobuf",
+    "sfml"
   ]
 }
