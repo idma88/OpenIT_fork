@@ -16,6 +16,11 @@ jobs:
         build_type: [Debug, Release]
 
     steps:
+    - name: Install dependencies
+      run: |
+        apt-fast update
+        apt-fast install -y libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev
+
     - uses: actions/checkout@v3
 
     - name: Restore cached vcpkg
@@ -23,26 +28,25 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: ${{github.workspace}}/vcpkg_installed
-        key: ${{matrix.os}}-${{matrix.arch.vcpkg_triplet}}-${{hashFiles('**/vcpkg.json')}}
+        key: ${{matrix.os}}-${{matrix.cxx}}-${{hashFiles('**/vcpkg.json')}}
 
     - name: Configure
-      env:
-        CXX: ${{matrix.cxx}}
       run: |
         cmake \
-          -S $GITHUB_WORKSPACE \
-          -B $GITHUB_WORKSPACE/build \
+          -S ${{github.workspace}} \
+          -B ${{github.workspace}}/build \
+          -DCMAKE_CXX_COMPILER=${{matrix.cxx}} \
           -DCMAKE_CXX_STANDARD=${{matrix.standard}} \
           -DCMAKE_BUILD_TYPE=${{matrix.build_type}} \
           -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
-          -DVCPKG_INSTALLED_DIR=$GITHUB_WORKSPACE/vcpkg_installed
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed
 
     - name: Save cached vcpkg
       id: cache-vcpkg-save
       uses: actions/cache/save@v3
       with:
         path: ${{github.workspace}}/vcpkg_installed
-        key: ${{matrix.os}}-${{matrix.arch.vcpkg_triplet}}-${{hashFiles('**/vcpkg.json')}}
+        key: ${{matrix.os}}-${{matrix.cxx}}-${{hashFiles('**/vcpkg.json')}}
 
     - name: Build
       working-directory: ${{github.workspace}}/build
