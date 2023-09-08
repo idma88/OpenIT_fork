@@ -23,7 +23,13 @@ jobs:
         - { name: Clang 13.0.1, cxx: clang++-13 }
         - { name: Clang 14.0.0, cxx: clang++-14 }
         type: [Debug, Release]
-        # include:
+        include:
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: GNU C++ 9.4.0, cxx: g++-9 }
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: Clang 10.0.0, cxx: clang++-10 }
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: Clang 11.0.0, cxx: clang++-11 }
         # - platform:
         #   - { name: Ubuntu 20.04, os: ubuntu-20.04 }
         #   compiler:
