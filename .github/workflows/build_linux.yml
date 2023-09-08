@@ -13,24 +13,24 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: Ubuntu 22.04, os: ubuntu-22.04 }
+        - { name: Ubuntu 22.04, os: ubuntu-22.04 }
         compiler: 
-          - { name: GNU C++ 9.5.0, cxx: g++-9 }
-          - { name: GNU C++ 10.5.0, cxx: g++-10 }
-          - { name: GNU C++ 11.4.0, cxx: g++-11 }
-          - { name: GNU C++ 12.3.0, cxx: g++-12 }
-          - { name: Clang 12.0.1, cxx: clang++-12 }
-          - { name: Clang 13.0.1, cxx: clang++-13 }
-          - { name: Clang 14.0.0, cxx: clang++-14 }
+        - { name: GNU C++ 9.5.0, cxx: g++-9 }
+        - { name: GNU C++ 10.5.0, cxx: g++-10 }
+        - { name: GNU C++ 11.4.0, cxx: g++-11 }
+        - { name: GNU C++ 12.3.0, cxx: g++-12 }
+        - { name: Clang 12.0.1, cxx: clang++-12 }
+        - { name: Clang 13.0.1, cxx: clang++-13 }
+        - { name: Clang 14.0.0, cxx: clang++-14 }
         type: [Debug, Release]
         include:
-          - platform:
-            - { name: Ubuntu 20.04, os: ubuntu-20.04 }
-            compiler:
-              - { name: GNU C++ 9.4.0, cxx: g++-9 }
-              - { name: Clang 10.0.0, cxx: clang++-10 }
-              - { name: Clang 11.0.0, cxx: clang++-11 }
-            type: [Debug, Release]
+        - platform:
+          - { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler:
+            - { name: GNU C++ 9.4.0, cxx: g++-9 }
+            - { name: Clang 10.0.0, cxx: clang++-10 }
+            - { name: Clang 11.0.0, cxx: clang++-11 }
+          type: [Debug, Release]
 
     steps:
     - name: Install dependencies
