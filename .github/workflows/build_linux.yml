@@ -9,6 +9,7 @@ jobs:
   build:
     name: ${{ matrix.compiler.name }} ${{ matrix.type }} (${{ matrix.platform.name }})
     runs-on: ${{ matrix.platform.os }}
+
     strategy:
       matrix:
         platform:
