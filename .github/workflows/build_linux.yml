@@ -49,12 +49,12 @@ jobs:
     - name: Configure
       run: |
         cmake \
-          -S ${{ github.workspace }} \
-          -B ${{ github.workspace }}/build \
+          -S $GITHUB_WORKSPACE \
+          -B $GITHUB_WORKSPACE/build \
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} \
           -DCMAKE_BUILD_TYPE=${{ matrix.type }} \
           -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
-          -DVCPKG_INSTALLED_DIR=${{ github.workspace }}/vcpkg_installed
+          -DVCPKG_INSTALLED_DIR=$GITHUB_WORKSPACE/vcpkg_installed
 
     - name: Save cached vcpkg
       id: cache-vcpkg-save
