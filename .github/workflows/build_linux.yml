@@ -26,17 +26,22 @@ jobs:
         include:
         - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
           compiler: { name: GNU C++ 9.4.0, cxx: g++-9 }
+          type: Debug
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: GNU C++ 9.4.0, cxx: g++-9 }
+          type: Release
         - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
           compiler: { name: Clang 10.0.0, cxx: clang++-10 }
+          type: Debug
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: Clang 10.0.0, cxx: clang++-10 }
+          type: Release
         - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
           compiler: { name: Clang 11.0.0, cxx: clang++-11 }
-        # - platform:
-        #   - { name: Ubuntu 20.04, os: ubuntu-20.04 }
-        #   compiler:
-        #     - { name: GNU C++ 9.4.0, cxx: g++-9 }
-        #     - { name: Clang 10.0.0, cxx: clang++-10 }
-        #     - { name: Clang 11.0.0, cxx: clang++-11 }
-        #   type: [Debug, Release]
+          type: Debug
+        - platform: { name: Ubuntu 20.04, os: ubuntu-20.04 }
+          compiler: { name: Clang 11.0.0, cxx: clang++-11 }
+          type: Release
 
     steps:
     - name: Install dependencies
